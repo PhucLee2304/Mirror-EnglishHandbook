@@ -1,0 +1,59 @@
+# Temporary files
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.DS_Store
+
+# Binary files and build outputs
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go specific ignores
+
+# Firebase credentials
+credentials/service-account.json
+vendor/
+/go.work
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+logs/
+
+# Credentials
+/credentials/
+*.pem
+*.key
+*.p12
+*.pfx
+service-account.json
+
+# Environment variables
+**/.env*
+
+# Air hot reload
+.air.toml
+/tmp/
+/tmp-*
+
+#local
+/data/*
+**/data_*/
