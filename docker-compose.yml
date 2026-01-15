@@ -1,0 +1,81 @@
+services:
+  db:
+    image: postgres:15-alpine
+    # container_name: edict-db
+    restart: always
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+    ports:
+      - "$POSTGRES_PORT:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - edict-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  nginx:
+    image: nginx:alpine
+    # container_name: edict-nginx
+    restart: always
+    ports:
+      - "$NGINX_PORT:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - app
+    networks:
+      - edict-network
+
+  app:
+    build: ./core
+    # container_name: edict-app
+    restart: always
+    env_file:
+      - .env
+    expose:
+      - "$APP_PORT"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - edict-network
+    volumes:
+      - ./core:/app
+      - go-modules:/go/pkg/mod
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "${APP_PORT}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  redis:
+    image: redis:alpine
+    # container_name: edict-redis
+    restart: unless-stopped
+    ports:
+      - "$REDIS_PORT:6379"
+    networks:
+      - edict-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  go-modules:
+
+networks:
+  edict-network:
+    driver: bridge
