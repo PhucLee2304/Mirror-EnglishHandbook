@@ -51,6 +51,7 @@ services:
     volumes:
       - ./core:/app
       - go-modules:/go/pkg/mod
+      - D:/Project/Go/EnglishHandbook/english-handbook-data:/data:ro
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "${APP_PORT}"]
       interval: 30s

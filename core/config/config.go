@@ -20,6 +20,8 @@ type Config struct {
 	RedisHost      string
 	RedisPort      string
 	RedisRatelimit string
+
+	DataJsonPath string
 }
 
 func LoadConfig() (*Config, error) {
@@ -47,6 +49,8 @@ func LoadConfig() (*Config, error) {
 		RedisHost:      getEnv("REDIS_HOST", "localhost"),
 		RedisPort:      getEnv("REDIS_PORT", "6379"),
 		RedisRatelimit: getEnv("REDIS_RATE_LIMIT", "1000"),
+
+		DataJsonPath: getEnv("DATA_JSON_PATH", ""),
 	}
 
 	return cfg, nil
