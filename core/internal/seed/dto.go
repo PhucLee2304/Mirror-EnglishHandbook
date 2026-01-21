@@ -21,8 +21,8 @@ type JsonMeaning struct {
 }
 
 type JsonDefinition struct {
-	DefinitionText string   `json:"definitionText"`
-	Example        *string  `json:"example"`
-	Antonyms       []string `json:"antonyms"`
-	Synonyms       []string `json:"synonyms"`
+	Definition string   `json:"definition"`
+	Example    *string  `json:"example"`
+	Antonyms   []string `json:"antonyms"`
+	Synonyms   []string `json:"synonyms"`
 }
