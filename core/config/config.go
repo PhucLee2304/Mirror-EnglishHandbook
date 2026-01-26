@@ -57,8 +57,12 @@ func LoadConfig() (*Config, error) {
 }
 
 func (c *Config) DSN() string {
-	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		c.DBHost, c.DBPort, c.DBUser, c.DBPassword, c.DBName)
+	if c.DBHost != "" {
+		return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			c.DBHost, c.DBPort, c.DBUser, c.DBPassword, c.DBName)
+	}
+
+	return os.Getenv("POSTGRES_RENDER_INTERNAL_URL")
 }
 
 func (c *Config) RedisAddress() string {
