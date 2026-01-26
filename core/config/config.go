@@ -60,9 +60,9 @@ func LoadConfig() (*Config, error) {
 
 func (c *Config) DSN() string {
 	if c.AppMode == "production" {
-		dsn := os.Getenv("POSTGRES_RENDER_INTERNAL_URL")
+		dsn := os.Getenv("POSTGRES_RENDER_EXTERNAL_URL")
 		if dsn == "" {
-			log.Fatal("POSTGRES_RENDER_INTERNAL_URL is required in production")
+			log.Fatal("POSTGRES_RENDER_EXTERNAL_URL is required in production")
 		}
 		return dsn
 	}
