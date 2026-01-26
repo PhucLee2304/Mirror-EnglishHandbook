@@ -73,7 +73,11 @@ func main() {
 	wordHandler := handler.NewWordHandler(wordService)
 	wordHandler.SetupRouter(api, cfg)
 
-	addr := fmt.Sprintf(":%s", cfg.AppPort)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = cfg.AppPort
+	}
+	addr := fmt.Sprintf(":%s", port)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: r,
