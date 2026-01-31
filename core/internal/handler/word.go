@@ -31,7 +31,9 @@ func (h *WordHandler) SetupRouter(r *gin.RouterGroup, cfg *config.Config) {
 // @Summary Get word details by ID
 // @Description Retrieve detailed information about a specific word using its unique ID (phonetics, meanings, definitions).
 // @Tags Words
+// @Accept JSON
 // @Produce JSON
+// @Security BearerAuth
 // @Param id path int true "Word ID"
 // @Success 200 {object} dto.WordBase "Word details retrieved successfully"
 // @Failure 400 {object} response.ErrorResponse "Invalid ID format"
@@ -43,6 +45,16 @@ func (h *WordHandler) getByID(c *gin.Context) {
 	if err := c.ShouldBindUri(&uri); err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorResponse{
 			Error:  response.MessageCodeBadRequest,
+			Detail: err.Error(),
+		})
+		return
+	}
+
+	authCtx := jwt.AuthContext{Context: c}
+	_, err := authCtx.GetUserID()
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, response.ErrorResponse{
+			Error:  response.MessageCodeUnauthorized,
 			Detail: err.Error(),
 		})
 		return
@@ -60,8 +72,10 @@ func (h *WordHandler) getByID(c *gin.Context) {
 // @Summary Get a list of words
 // @Description Retrieve a paginated list of words from the dictionary. Supports text search and filtering by part of speech (noun, verb, etc.).
 // @Tags Words
-// @Produce json
-// @Param query query dto.GetWordsQuery false "Pagination and Filter parameters"
+// @Accept JSON
+// @Produce JSON
+// @Security BearerAuth
+// @Param query dto.GetWordsQuery false "Pagination and Filter parameters"
 // @Success 200 {object} dto.GetWordsResponse "Words retrieved successfully"
 // @Failure 400 {object} response.ErrorResponse "Invalid query parameters (e.g., invalid limit/offset)"
 // @Failure 500 {object} response.ErrorResponse "Internal Server Error"
@@ -76,10 +90,10 @@ func (h *WordHandler) getList(c *gin.Context) {
 		return
 	}
 
-	response, httpErr := h.wordService.GetList(c.Request.Context(), query)
+	resp, httpErr := h.wordService.GetList(c.Request.Context(), query)
 	if httpErr != nil {
 		c.JSON(httpErr.StatusCode, httpErr.Error)
 		return
 	}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, resp)
 }

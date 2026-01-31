@@ -1,8 +1,9 @@
 package response
 
 const (
-	MessageCodeBadRequest string = "bad-request"
-	MessageCodeNotFound   string = "not-found"
+	MessageCodeBadRequest   string = "bad-request"
+	MessageCodeNotFound     string = "not-found"
+	MessageCodeUnauthorized string = "unauthorized"
 
 	MessageCodeInvalidIDToken               string = "invalid-id-token"
 	MessageCodeInvalidRefreshToken          string = "invalid-refresh-token"
