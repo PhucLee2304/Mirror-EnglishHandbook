@@ -137,7 +137,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, refreshToken string) (*d
 	claims, err := jwt.ValidateRefreshToken(s.cfg, refreshToken)
 	if err != nil {
 		return nil, &response.HTTPError{
-			StatusCode: http.StatusInternalServerError,
+			StatusCode: http.StatusUnauthorized,
 			Error: response.ErrorResponse{
 				Error:  response.MessageCodeInvalidRefreshToken,
 				Detail: err.Error(),
