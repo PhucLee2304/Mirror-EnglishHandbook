@@ -5,10 +5,12 @@ const (
 	MessageCodeNotFound   string = "not-found"
 
 	MessageCodeInvalidIDToken               string = "invalid-id-token"
+	MessageCodeInvalidRefreshToken          string = "invalid-refresh-token"
 	MessageCodeFailedToGetFirebaseUser      string = "failed-to-get-firebase-user"
 	MessageCodeFailedToLogin                string = "failed-to-login"
 	MessageCodeFailedToGenerateAccessToken  string = "failed-to-generate-access-token"
 	MessageCodeFailedToGenerateRefreshToken string = "failed-to-generate-refresh-token"
+	MessageCodeUserNotFound                 string = "user-not-found"
 
 	MessageCodeFailedToGetWords string = "failed-to-get-words"
 )

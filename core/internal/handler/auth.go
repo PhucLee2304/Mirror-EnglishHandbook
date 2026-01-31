@@ -23,6 +23,7 @@ func (h *AuthHandler) SetupRouter(r *gin.RouterGroup) *gin.RouterGroup {
 	g := r.Group("/v1/auth")
 	{
 		g.POST("/firebase", h.login)
+		g.POST("/refresh", h.refreshToken)
 	}
 
 	return g
@@ -51,6 +52,37 @@ func (h *AuthHandler) login(c *gin.Context) {
 	}
 
 	resp, err := h.authService.Login(c.Request.Context(), body)
+	if err != nil {
+		c.JSON(err.StatusCode, err.Error)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// refreshToken
+// @Summary Refresh JWT tokens
+// @Description Refresh JWT tokens using refresh token
+// @Tags Auth
+// @Accept JSON
+// @Produce JSON
+// @Param request body dto.RefreshTokenBody true "Refresh Token Request"
+// @Success 200 {object} dto.LoginResponse "Token refreshed successfully"
+// @Failure 400 {object} core.ErrorResponse "Invalid request payload"
+// @Failure 401 {object} core.ErrorResponse "Unauthorized: Invalid refresh token"
+// @Failure 500 {object} core.ErrorResponse "Internal server error during token refresh"
+// @Router /api/v1/auth/refresh [post]
+func (h *AuthHandler) refreshToken(c *gin.Context) {
+	var body dto.RefreshTokenBody
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, response.ErrorResponse{
+			Error:  response.MessageCodeBadRequest,
+			Detail: err.Error(),
+		})
+		return
+	}
+
+	resp, err := h.authService.RefreshToken(c.Request.Context(), body.RefreshToken)
 	if err != nil {
 		c.JSON(err.StatusCode, err.Error)
 		return
