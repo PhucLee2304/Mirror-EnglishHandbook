@@ -32,6 +32,7 @@ func Migrate(db *gorm.DB) error {
 		&model.Definition{},
 		&model.Meaning{},
 		&model.Phonetic{},
+		&model.User{},
 		&model.Word{},
 	)
 	if err != nil {

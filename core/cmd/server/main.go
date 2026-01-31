@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"core/pkg/gateways/firebase"
 	"errors"
 	"fmt"
 	"io"
@@ -54,6 +55,11 @@ func main() {
 	}
 	gin.DefaultWriter = io.MultiWriter(os.Stdout, writer)
 
+	firebaseClient, err := firebase.NewClient(cfg)
+	if err != nil {
+		log.Printf("failed to create firebase client: %v\n", err)
+	}
+
 	if cfg.AppMode == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -67,11 +73,16 @@ func main() {
 
 	api := r.Group("/api")
 	wordRepo := repo.NewWordRepository(db)
+	userRepo := repo.NewUserRepository(db)
 
 	wordService := service.NewWordService(cfg, wordRepo)
+	authService := service.NewAuthService(userRepo, firebaseClient, cfg)
 
 	wordHandler := handler.NewWordHandler(wordService)
 	wordHandler.SetupRouter(api, cfg)
+
+	authHandler := handler.NewAuthHandler(authService)
+	authHandler.SetupRouter(api)
 
 	port := os.Getenv("PORT")
 	if port == "" {

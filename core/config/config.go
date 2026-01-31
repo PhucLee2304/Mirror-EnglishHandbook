@@ -22,6 +22,13 @@ type Config struct {
 	RedisPort      string
 	RedisRatelimit string
 
+	FirebaseCredentialsPath string
+
+	AccessSecret    string
+	RefreshSecret   string
+	AccessTokenTTL  string
+	RefreshTokenTTL string
+
 	DataJsonPath string
 }
 
@@ -43,6 +50,13 @@ func LoadConfig() (*Config, error) {
 		RedisHost:      getEnv("REDIS_HOST", "localhost"),
 		RedisPort:      getEnv("REDIS_PORT", "6379"),
 		RedisRatelimit: getEnv("REDIS_RATE_LIMIT", "1000"),
+
+		FirebaseCredentialsPath: getEnv("FIREBASE_CREDENTIALS_PATH", "path/to/firebase/credentials.json"),
+
+		AccessSecret:    getEnv("ACCESS_SECRET", ""),
+		RefreshSecret:   getEnv("REFRESH_SECRET", ""),
+		AccessTokenTTL:  getEnv("ACCESS_TOKEN_TTL", "5m"),
+		RefreshTokenTTL: getEnv("REFRESH_TOKEN_TTL", "720h"),
 
 		DataJsonPath: getEnv("DATA_JSON_PATH", ""),
 	}
