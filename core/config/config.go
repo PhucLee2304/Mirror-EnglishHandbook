@@ -29,7 +29,8 @@ type Config struct {
 	AccessTokenTTL  string
 	RefreshTokenTTL string
 
-	DataJsonPath string
+	HandbookDataJsonPath string
+	BookDataJsonPath     string
 }
 
 func LoadConfig() (*Config, error) {
@@ -58,7 +59,8 @@ func LoadConfig() (*Config, error) {
 		AccessTokenTTL:  getEnv("ACCESS_TOKEN_TTL", "5m"),
 		RefreshTokenTTL: getEnv("REFRESH_TOKEN_TTL", "720h"),
 
-		DataJsonPath: getEnv("DATA_JSON_PATH", ""),
+		HandbookDataJsonPath: getEnv("HANDBOOK_DATA_JSON_PATH", ""),
+		BookDataJsonPath:     getEnv("BOOK_DATA_JSON_PATH", ""),
 	}
 
 	if appMode != "production" {

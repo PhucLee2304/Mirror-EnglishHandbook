@@ -29,9 +29,12 @@ func Migrate(db *gorm.DB) error {
 	log.Println("Running database migrations...")
 
 	err := db.AutoMigrate(
+		&model.Book{},
 		&model.Definition{},
+		&model.Lesson{},
 		&model.Meaning{},
 		&model.Phonetic{},
+		&model.Question{},
 		&model.User{},
 		&model.Word{},
 	)

@@ -6,5 +6,6 @@ import (
 
 type Book struct {
 	gorm.Model
-	Title string `gorm:"type:text;not null;uniqueIndex"`
+	Title   string   `gorm:"type:text;not null;uniqueIndex"`
+	Lessons []Lesson `gorm:"foreignKey:BookID;constraint:OnDelete:CASCADE;"`
 }
