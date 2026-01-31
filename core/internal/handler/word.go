@@ -4,6 +4,7 @@ import (
 	"core/config"
 	"core/internal/dto"
 	"core/internal/service"
+	"core/pkg/gateways/jwt"
 	"core/pkg/response"
 	"net/http"
 
@@ -19,7 +20,7 @@ func NewWordHandler(wordService *service.WordService) *WordHandler {
 }
 
 func (h *WordHandler) SetupRouter(r *gin.RouterGroup, cfg *config.Config) {
-	g := r.Group("/v1/words")
+	g := r.Group("/v1/words", jwt.Middleware(cfg))
 	{
 		g.GET("/:id", h.getByID)
 		g.GET("", h.getList)
