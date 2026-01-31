@@ -77,6 +77,10 @@ func validateToken(tokenString string, secret []byte) (*TokenClaims, error) {
 	}
 }
 
+func ValidateAccessToken(cfg *config.Config, accessToken string) (*TokenClaims, error) {
+	return validateToken(accessToken, []byte(cfg.AccessSecret))
+}
+
 func ValidateRefreshToken(cfg *config.Config, refreshToken string) (*TokenClaims, error) {
 	return validateToken(refreshToken, []byte(cfg.RefreshSecret))
 }
