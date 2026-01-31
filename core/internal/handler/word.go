@@ -30,7 +30,7 @@ func (h *WordHandler) SetupRouter(r *gin.RouterGroup, cfg *config.Config) {
 // @Summary Get word details by ID
 // @Description Retrieve detailed information about a specific word using its unique ID (phonetics, meanings, definitions).
 // @Tags Words
-// @Produce json
+// @Produce JSON
 // @Param id path int true "Word ID"
 // @Success 200 {object} dto.WordBase "Word details retrieved successfully"
 // @Failure 400 {object} response.ErrorResponse "Invalid ID format"

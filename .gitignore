@@ -50,7 +50,7 @@ service-account.json
 **/.env*
 
 # Air hot reload
-.air.toml
+#.air.toml
 /tmp/
 /tmp-*
 
