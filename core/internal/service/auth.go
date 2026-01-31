@@ -132,3 +132,43 @@ func (s *AuthService) Login(ctx context.Context, body dto.LoginBody) (*dto.Login
 		RefreshToken: refreshToken.Value,
 	}, nil
 }
+
+func (s *AuthService) RefreshToken(ctx context.Context, refreshToken string) (*dto.LoginResponse, *response.HTTPError) {
+	claims, err := jwt.ValidateRefreshToken(s.cfg, refreshToken)
+	if err != nil {
+		return nil, &response.HTTPError{
+			StatusCode: http.StatusInternalServerError,
+			Error: response.ErrorResponse{
+				Error:  response.MessageCodeInvalidRefreshToken,
+				Detail: err.Error(),
+			},
+		}
+	}
+
+	user, err := s.userRepo.GetByID(ctx, claims.ID)
+	if err != nil {
+		return nil, &response.HTTPError{
+			StatusCode: http.StatusInternalServerError,
+			Error: response.ErrorResponse{
+				Error:  response.MessageCodeUserNotFound,
+				Detail: err.Error(),
+			},
+		}
+	}
+
+	accessToken, err := jwt.GenerateAccessToken(s.cfg, user.ID)
+	if err != nil {
+		return nil, &response.HTTPError{
+			StatusCode: http.StatusInternalServerError,
+			Error: response.ErrorResponse{
+				Error:  response.MessageCodeFailedToGenerateAccessToken,
+				Detail: err.Error(),
+			},
+		}
+	}
+
+	return &dto.LoginResponse{
+		AccessToken:  accessToken.Value,
+		RefreshToken: refreshToken,
+	}, nil
+}

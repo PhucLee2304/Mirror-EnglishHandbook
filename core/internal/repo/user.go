@@ -34,3 +34,12 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*model.U
 
 	return &user, nil
 }
+
+func (r *UserRepository) GetByID(ctx context.Context, id uint) (*model.User, error) {
+	var user model.User
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

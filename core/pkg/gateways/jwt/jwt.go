@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"core/config"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -55,4 +56,27 @@ func GenerateRefreshToken(cfg *config.Config, id uint) (*Token, error) {
 		Value:     refreshToken,
 		ExpiredAt: claims.ExpiresAt.Time,
 	}, nil
+}
+
+func validateToken(tokenString string, secret []byte) (*TokenClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return secret, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*TokenClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return nil, err
+	}
+}
+
+func ValidateRefreshToken(cfg *config.Config, refreshToken string) (*TokenClaims, error) {
+	return validateToken(refreshToken, []byte(cfg.RefreshSecret))
 }
