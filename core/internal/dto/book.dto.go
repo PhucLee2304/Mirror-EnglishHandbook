@@ -45,14 +45,13 @@ type LessonUri struct {
 	LessonID uint `uri:"lessonID" binding:"required,min=1"`
 }
 
-type GetQuestionsQuery struct {
-	Limit  int    `form:"limit" binding:"omitempty,min=1,max=100"`
-	Offset int    `form:"offset" binding:"omitempty,min=0"`
-	Query  string `form:"query" binding:"omitempty,max=100"`
-}
+//type GetQuestionsQuery struct {
+//	Limit  int    `form:"limit" binding:"omitempty,min=1,max=100"`
+//	Offset int    `form:"offset" binding:"omitempty,min=0"`
+//	Query  string `form:"query" binding:"omitempty,max=100"`
+//}
 
 type QuestionBase struct {
-	LessonBase
 	ID        uint    `json:"id"`
 	Content   string  `json:"content"`
 	TimeStart float64 `json:"timeStart"`
@@ -61,6 +60,7 @@ type QuestionBase struct {
 }
 
 type GetQuestionsResponse struct {
+	LessonBase
 	Questions []QuestionBase `json:"questions"`
-	Total     int64          `json:"total"`
+	Duration  float64        `json:"duration"`
 }

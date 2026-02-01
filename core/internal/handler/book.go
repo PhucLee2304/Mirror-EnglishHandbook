@@ -24,7 +24,7 @@ func (h *BookHandler) SetupRouter(r *gin.RouterGroup, cfg *config.Config) {
 	{
 		g.GET("", h.getList)
 		g.GET("/:id", h.getByID)
-		g.GET(":id/lessons/lessonID", h.getLessonByID)
+		g.GET(":id/lessons/:lessonID", h.getLessonByID)
 	}
 }
 
@@ -114,16 +114,16 @@ func (h *BookHandler) getLessonByID(c *gin.Context) {
 		return
 	}
 
-	var query dto.GetQuestionsQuery
-	if err := c.ShouldBindQuery(&query); err != nil {
-		c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Error:  response.MessageCodeBadRequest,
-			Detail: err.Error(),
-		})
-		return
-	}
+	//var query dto.GetQuestionsQuery
+	//if err := c.ShouldBindQuery(&query); err != nil {
+	//	c.JSON(http.StatusBadRequest, response.ErrorResponse{
+	//		Error:  response.MessageCodeBadRequest,
+	//		Detail: err.Error(),
+	//	})
+	//	return
+	//}
 
-	resp, httpErr := h.bookService.GetLessonByID(c.Request.Context(), uri.LessonID, query)
+	resp, httpErr := h.bookService.GetLessonByID(c.Request.Context(), uri.LessonID)
 	if httpErr != nil {
 		c.JSON(httpErr.StatusCode, httpErr.Error)
 	}

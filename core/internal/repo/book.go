@@ -96,25 +96,31 @@ func (r *BookRepository) GetByID(ctx context.Context, id uint, query dto.GetLess
 	}, nil
 }
 
-func (r *BookRepository) GetLessonByID(ctx context.Context, id uint, query dto.GetQuestionsQuery) (*dto.GetQuestionsResponse, error) {
+func (r *BookRepository) GetLessonByID(ctx context.Context, id uint) (*dto.GetQuestionsResponse, error) {
 	var lesson model.Lesson
 	if err := r.db.WithContext(ctx).Preload("Book").First(&lesson, id).Error; err != nil {
 		return nil, err
 	}
 
 	var questions []model.Question
-	var total int64
+	//var total int64
 
-	db := r.db.WithContext(ctx).Model(&model.Question{}).Where("lesson_id = ?", id)
-	if query.Query != "" {
-		db = db.Where("content ILIKE ?", query.Query+"%")
-	}
+	//db := r.db.WithContext(ctx).Model(&model.Question{}).Where("lesson_id = ?", id)
+	//if query.Query != "" {
+	//	db = db.Where("content ILIKE ?", query.Query+"%")
+	//}
 
-	if err := db.Count(&total).Error; err != nil {
-		return nil, err
-	}
+	//if err := db.Count(&total).Error; err != nil {
+	//	return nil, err
+	//}
 
-	if err := db.Limit(query.Limit).Offset(query.Offset).Order("\"order\" ASC").Find(&questions).Error; err != nil {
+	//if err := db.Limit(query.Limit).Offset(query.Offset).Order("\"order\" ASC").Find(&questions).Error; err != nil {
+	//	return nil, err
+	//}
+	if err := r.db.WithContext(ctx).
+		Where("lesson_id = ?", id).
+		Order("\"order\" ASC").
+		Find(&questions).Error; err != nil {
 		return nil, err
 	}
 
@@ -133,17 +139,23 @@ func (r *BookRepository) GetLessonByID(ctx context.Context, id uint, query dto.G
 	resp := make([]dto.QuestionBase, 0, len(questions))
 	for _, question := range questions {
 		resp = append(resp, dto.QuestionBase{
-			LessonBase: lessonBase,
-			ID:         question.ID,
-			Content:    question.Content,
-			TimeStart:  question.TimeStart,
-			TimeEnd:    question.TimeEnd,
-			Order:      question.Order,
+			ID:        question.ID,
+			Content:   question.Content,
+			TimeStart: question.TimeStart,
+			TimeEnd:   question.TimeEnd,
+			Order:     question.Order,
 		})
 	}
 
+	var duration float64
+	if len(questions) > 0 {
+		lastQuestion := questions[len(questions)-1]
+		duration = lastQuestion.TimeEnd
+	}
+
 	return &dto.GetQuestionsResponse{
-		Questions: resp,
-		Total:     total,
+		LessonBase: lessonBase,
+		Questions:  resp,
+		Duration:   duration,
 	}, nil
 }
