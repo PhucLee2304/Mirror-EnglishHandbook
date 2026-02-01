@@ -62,15 +62,15 @@ func (s *BookService) GetByID(ctx context.Context, id uint, query dto.GetLessons
 	return result, nil
 }
 
-func (s *BookService) GetLessonByID(ctx context.Context, id uint, query dto.GetQuestionsQuery) (*dto.GetQuestionsResponse, *response.HTTPError) {
-	if query.Limit <= 0 || query.Limit > 100 {
-		query.Limit = 10
-	}
-	if query.Offset < 0 {
-		query.Offset = 0
-	}
+func (s *BookService) GetLessonByID(ctx context.Context, id uint) (*dto.GetQuestionsResponse, *response.HTTPError) {
+	//if query.Limit <= 0 || query.Limit > 100 {
+	//	query.Limit = 10
+	//}
+	//if query.Offset < 0 {
+	//	query.Offset = 0
+	//}
 
-	result, err := s.bookRepo.GetLessonByID(ctx, id, query)
+	result, err := s.bookRepo.GetLessonByID(ctx, id)
 	if err != nil {
 		return nil, &response.HTTPError{
 			StatusCode: http.StatusInternalServerError,
