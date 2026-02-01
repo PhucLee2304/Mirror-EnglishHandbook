@@ -23,7 +23,7 @@ type Token struct {
 }
 
 func (c *AuthContext) GetUserID() (uint, error) {
-	val, exists := c.Get("user_id")
+	val, exists := c.Get("userID")
 	if !exists {
 		return 0, errors.New("user id not found in context")
 	}

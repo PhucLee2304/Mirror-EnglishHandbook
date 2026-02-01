@@ -14,4 +14,8 @@ const (
 	MessageCodeUserNotFound                 string = "user-not-found"
 
 	MessageCodeFailedToGetWords string = "failed-to-get-words"
+
+	MessageCodeFailedToGetBooks     string = "failed-to-get-books"
+	MessageCodeFailedToGetLessons   string = "failed-to-get-lessons"
+	MessageCodeFailedToGetQuestions string = "failed-to-get-questions"
 )
