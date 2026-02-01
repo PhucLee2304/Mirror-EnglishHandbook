@@ -24,7 +24,7 @@ func (h *BookHandler) SetupRouter(r *gin.RouterGroup, cfg *config.Config) {
 	{
 		g.GET("", h.getList)
 		g.GET("/:id", h.getByID)
-		g.GET(":bookID/lessonID", h.getLessonByID)
+		g.GET(":id/lessons/lessonID", h.getLessonByID)
 	}
 }
 
