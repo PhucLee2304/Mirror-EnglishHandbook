@@ -90,6 +90,16 @@ func (h *WordHandler) getList(c *gin.Context) {
 		return
 	}
 
+	authCtx := jwt.AuthContext{Context: c}
+	_, err := authCtx.GetUserID()
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, response.ErrorResponse{
+			Error:  response.MessageCodeUnauthorized,
+			Detail: err.Error(),
+		})
+		return
+	}
+
 	resp, httpErr := h.wordService.GetList(c.Request.Context(), query)
 	if httpErr != nil {
 		c.JSON(httpErr.StatusCode, httpErr.Error)

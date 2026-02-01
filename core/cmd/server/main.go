@@ -74,15 +74,20 @@ func main() {
 	api := r.Group("/api")
 	wordRepo := repo.NewWordRepository(db)
 	userRepo := repo.NewUserRepository(db)
+	bookRepo := repo.NewBookRepository(db)
 
 	wordService := service.NewWordService(cfg, wordRepo)
 	authService := service.NewAuthService(userRepo, firebaseClient, cfg)
+	bookService := service.NewBookService(cfg, bookRepo)
 
 	wordHandler := handler.NewWordHandler(wordService)
 	wordHandler.SetupRouter(api, cfg)
 
 	authHandler := handler.NewAuthHandler(authService)
 	authHandler.SetupRouter(api)
+
+	bookHandler := handler.NewBookHandler(bookService)
+	bookHandler.SetupRouter(api, cfg)
 
 	port := os.Getenv("PORT")
 	if port == "" {
