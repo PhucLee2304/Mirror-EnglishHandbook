@@ -41,7 +41,7 @@ type GetLessonsResponse struct {
 }
 
 type LessonUri struct {
-	BookID   uint `uri:"bookID" binding:"required,min=1"`
+	BookID   uint `uri:"id" binding:"required,min=1"`
 	LessonID uint `uri:"lessonID" binding:"required,min=1"`
 }
 
