@@ -31,6 +31,13 @@ type Config struct {
 
 	HandbookDataJsonPath string
 	BookDataJsonPath     string
+
+	MinioHost            string
+	MinioPort            string
+	MinioAccessKey       string
+	MinioSecretKey       string
+	MinioUseSSL          bool
+	BucketBooksVideoName string
 }
 
 func LoadConfig() (*Config, error) {
@@ -61,6 +68,13 @@ func LoadConfig() (*Config, error) {
 
 		HandbookDataJsonPath: getEnv("HANDBOOK_DATA_JSON_PATH", ""),
 		BookDataJsonPath:     getEnv("BOOK_DATA_JSON_PATH", ""),
+
+		MinioHost:            getEnv("MINIO_HOST", "localhost"),
+		MinioPort:            getEnv("MINIO_PORT", "9000"),
+		MinioAccessKey:       getEnv("MINIO_ACCESS_KEY", "admin"),
+		MinioSecretKey:       getEnv("MINIO_SECRET_KEY", "23042004Phuc@"),
+		MinioUseSSL:          getEnv("MINIO_USE_SSL", "false") == "true",
+		BucketBooksVideoName: getEnv("BUCKET_BOOKS_VIDEO_NAME", "video"),
 	}
 
 	if appMode != "production" {

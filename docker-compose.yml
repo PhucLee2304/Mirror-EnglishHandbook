@@ -46,6 +46,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      minio:
+       condition: service_healthy
     networks:
       - edict-network
     volumes:
@@ -70,6 +72,27 @@ services:
       - edict-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  minio:
+    image: minio/minio:latest
+    restart: always
+    ports:
+      - "$MINIO_PORT:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    command: ["server", "/data", "--console-address", ":9001"]
+    volumes:
+      - ./data/minio:/data
+    networks:
+      - edict-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 10s
       timeout: 5s
       retries: 5
