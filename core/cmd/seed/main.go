@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -9,6 +10,9 @@ import (
 	"core/config"
 	"core/database"
 	"core/internal/seed"
+
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 func main() {
@@ -52,6 +56,16 @@ func main() {
 		}
 	}
 
+	// ====== //
+	minioEndpoint := fmt.Sprintf("%s:%s", cfg.MinioHost, cfg.MinioPort)
+	minioClient, err := minio.New(minioEndpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(cfg.MinioAccessKey, cfg.MinioSecretKey, ""),
+		Secure: cfg.MinioUseSSL,
+	})
+	if err != nil {
+		log.Fatalf("Failed to create minio client: %v", err)
+	}
+	bucketName := cfg.BucketBooksVideoName
 	if cfg.BookDataJsonPath == "" {
 		log.Fatalf("BOOK_DATA_JSON_PATH is not set")
 		return
@@ -68,7 +82,7 @@ func main() {
 		}
 		path := filepath.Join(cfg.BookDataJsonPath, entry.Name())
 		log.Printf("Seeding data from file: %s", path)
-		if err := seed.LoadBookFile(db, path); err != nil {
+		if err := seed.LoadBookFile(db, path, minioClient, cfg.BookDataJsonPath, bucketName); err != nil {
 			log.Fatalf("Failed to load book seed file %s: %v", path, err)
 			return
 		}
