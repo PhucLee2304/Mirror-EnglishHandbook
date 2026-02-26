@@ -35,4 +35,8 @@ func Middleware(cfg *config.Config) gin.HandlerFunc {
 		c.Set("userID", claims.ID)
 		c.Next()
 	}
+	//return func(c *gin.Context) {
+	//	c.Set("userID", uint(1))
+	//	c.Next()
+	//}
 }
