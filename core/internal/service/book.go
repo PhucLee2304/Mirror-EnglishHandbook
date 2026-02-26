@@ -6,6 +6,7 @@ import (
 	"core/internal/dto"
 	"core/internal/repo"
 	"core/pkg/response"
+	"fmt"
 	"net/http"
 )
 
@@ -56,6 +57,16 @@ func (s *BookService) GetByID(ctx context.Context, id uint, query dto.GetLessons
 				Error:  response.MessageCodeFailedToGetLessons,
 				Detail: err.Error(),
 			},
+		}
+	}
+
+	for i := range result.Lessons {
+		if result.Lessons[i].AudioURL != "" {
+			result.Lessons[i].AudioURL = fmt.Sprintf("%s/%s/%s",
+				s.cfg.MinioExternalURL,
+				s.cfg.BucketBooksVideoName,
+				result.Lessons[i].AudioURL,
+			)
 		}
 	}
 
