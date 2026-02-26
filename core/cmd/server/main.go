@@ -15,6 +15,7 @@ import (
 
 	"core/config"
 	"core/database"
+	"core/pkg/gateways/minio"
 
 	"core/internal/handler"
 	"core/internal/repo"
@@ -58,6 +59,11 @@ func main() {
 	firebaseClient, err := firebase.NewClient(cfg)
 	if err != nil {
 		log.Printf("failed to create firebase client: %v\n", err)
+	}
+
+	_, err = minio.InitMinioClient(cfg)
+	if err != nil {
+		log.Printf("failed to init minio client: %v\n", err)
 	}
 
 	if cfg.AppMode == "production" {
