@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -10,9 +9,7 @@ import (
 	"core/config"
 	"core/database"
 	"core/internal/seed"
-
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
+	"core/pkg/gateways/minio"
 )
 
 func main() {
@@ -57,13 +54,9 @@ func main() {
 	}
 
 	// ====== //
-	minioEndpoint := fmt.Sprintf("%s:%s", cfg.MinioHost, cfg.MinioPort)
-	minioClient, err := minio.New(minioEndpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(cfg.MinioAccessKey, cfg.MinioSecretKey, ""),
-		Secure: cfg.MinioUseSSL,
-	})
+	minioClient, err := minio.InitMinioClient(cfg)
 	if err != nil {
-		log.Fatalf("Failed to create minio client: %v", err)
+		log.Fatalf("Failed to initialize minio client: %v", err)
 	}
 	bucketName := cfg.BucketBooksVideoName
 	if cfg.BookDataJsonPath == "" {
