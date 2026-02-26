@@ -38,6 +38,7 @@ type Config struct {
 	MinioSecretKey       string
 	MinioUseSSL          bool
 	BucketBooksVideoName string
+	MinioExternalURL     string
 }
 
 func LoadConfig() (*Config, error) {
@@ -75,6 +76,7 @@ func LoadConfig() (*Config, error) {
 		MinioSecretKey:       getEnv("MINIO_SECRET_KEY", "23042004Phuc@"),
 		MinioUseSSL:          getEnv("MINIO_USE_SSL", "false") == "true",
 		BucketBooksVideoName: getEnv("BUCKET_BOOKS_VIDEO_NAME", "video"),
+		MinioExternalURL:     getEnv("MINIO_EXTERNAL_URL", "http://localhost:9000"),
 	}
 
 	if appMode != "production" {
