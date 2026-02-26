@@ -6,7 +6,7 @@ import (
 	"core/internal/dto"
 	"core/internal/repo"
 	"core/pkg/response"
-	"fmt"
+	"core/pkg/utils/miniox"
 	"net/http"
 )
 
@@ -62,7 +62,7 @@ func (s *BookService) GetByID(ctx context.Context, id uint, query dto.GetLessons
 
 	for i := range result.Lessons {
 		if result.Lessons[i].AudioURL != "" {
-			result.Lessons[i].AudioURL = fmt.Sprintf("%s/%s/%s",
+			result.Lessons[i].AudioURL = miniox.FulfillURL(
 				s.cfg.MinioExternalURL,
 				s.cfg.BucketBooksVideoName,
 				result.Lessons[i].AudioURL,
@@ -91,6 +91,12 @@ func (s *BookService) GetLessonByID(ctx context.Context, id uint) (*dto.GetQuest
 			},
 		}
 	}
+
+	result.AudioURL = miniox.FulfillURL(
+		s.cfg.MinioExternalURL,
+		s.cfg.BucketBooksVideoName,
+		result.AudioURL,
+	)
 
 	return result, nil
 }
